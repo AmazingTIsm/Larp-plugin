@@ -1,0 +1,916 @@
+{
+  "entries": 182,
+  "source": "https://github.com/mezotv/discord-badges",
+  "badges": [
+    {
+      "id": "catalog_account_age_blossom_svg",
+      "description": "Account Age / Blossom",
+      "icon": "account-age/blossom.svg"
+    },
+    {
+      "id": "catalog_account_age_bristlecone_svg",
+      "description": "Account Age / Bristlecone",
+      "icon": "account-age/bristlecone.svg"
+    },
+    {
+      "id": "catalog_account_age_bud_svg",
+      "description": "Account Age / Bud",
+      "icon": "account-age/bud.svg"
+    },
+    {
+      "id": "catalog_account_age_primordial_svg",
+      "description": "Account Age / Primordial",
+      "icon": "account-age/primordial.svg"
+    },
+    {
+      "id": "catalog_account_age_redwood_svg",
+      "description": "Account Age / Redwood",
+      "icon": "account-age/redwood.svg"
+    },
+    {
+      "id": "catalog_account_age_sapling_svg",
+      "description": "Account Age / Sapling",
+      "icon": "account-age/sapling.svg"
+    },
+    {
+      "id": "catalog_account_age_seed_svg",
+      "description": "Account Age / Seed",
+      "icon": "account-age/seed.svg"
+    },
+    {
+      "id": "catalog_account_age_sequoia_svg",
+      "description": "Account Age / Sequoia",
+      "icon": "account-age/sequoia.svg"
+    },
+    {
+      "id": "catalog_account_age_sprout_svg",
+      "description": "Account Age / Sprout",
+      "icon": "account-age/sprout.svg"
+    },
+    {
+      "id": "catalog_account_age_stromatolite_svg",
+      "description": "Account Age / Stromatolite",
+      "icon": "account-age/stromatolite.svg"
+    },
+    {
+      "id": "catalog_active_developer_svg",
+      "description": "Active Developer",
+      "icon": "active-developer.svg"
+    },
+    {
+      "id": "catalog_automod_svg",
+      "description": "Automod",
+      "icon": "automod.svg"
+    },
+    {
+      "id": "catalog_boosts_discord_boost_1_svg",
+      "description": "Boosts / Discord Boost 1",
+      "icon": "boosts/discord-boost-1.svg"
+    },
+    {
+      "id": "catalog_boosts_discord_boost_2_svg",
+      "description": "Boosts / Discord Boost 2",
+      "icon": "boosts/discord-boost-2.svg"
+    },
+    {
+      "id": "catalog_boosts_discord_boost_3_svg",
+      "description": "Boosts / Discord Boost 3",
+      "icon": "boosts/discord-boost-3.svg"
+    },
+    {
+      "id": "catalog_boosts_discord_boost_4_svg",
+      "description": "Boosts / Discord Boost 4",
+      "icon": "boosts/discord-boost-4.svg"
+    },
+    {
+      "id": "catalog_boosts_discord_boost_5_svg",
+      "description": "Boosts / Discord Boost 5",
+      "icon": "boosts/discord-boost-5.svg"
+    },
+    {
+      "id": "catalog_boosts_discord_boost_6_svg",
+      "description": "Boosts / Discord Boost 6",
+      "icon": "boosts/discord-boost-6.svg"
+    },
+    {
+      "id": "catalog_boosts_discord_boost_7_svg",
+      "description": "Boosts / Discord Boost 7",
+      "icon": "boosts/discord-boost-7.svg"
+    },
+    {
+      "id": "catalog_boosts_discord_boost_8_svg",
+      "description": "Boosts / Discord Boost 8",
+      "icon": "boosts/discord-boost-8.svg"
+    },
+    {
+      "id": "catalog_boosts_discord_boost_9_svg",
+      "description": "Boosts / Discord Boost 9",
+      "icon": "boosts/discord-boost-9.svg"
+    },
+    {
+      "id": "catalog_discord_bot_dev_svg",
+      "description": "Discord Bot Dev",
+      "icon": "discord-bot-dev.svg"
+    },
+    {
+      "id": "catalog_discord_bug_hunter_gold_svg",
+      "description": "Discord Bug Hunter Gold",
+      "icon": "discord-bug-hunter-gold.svg"
+    },
+    {
+      "id": "catalog_discord_bug_hunter_green_svg",
+      "description": "Discord Bug Hunter Green",
+      "icon": "discord-bug-hunter-green.svg"
+    },
+    {
+      "id": "catalog_discord_early_supporter_svg",
+      "description": "Discord Early Supporter",
+      "icon": "discord-early-supporter.svg"
+    },
+    {
+      "id": "catalog_discord_mod_svg",
+      "description": "Discord Mod",
+      "icon": "discord-mod.svg"
+    },
+    {
+      "id": "catalog_discord_nitro_basic_svg",
+      "description": "Discord Nitro Basic",
+      "icon": "discord-nitro-basic.svg"
+    },
+    {
+      "id": "catalog_discord_nitro_svg",
+      "description": "Discord Nitro",
+      "icon": "discord-nitro.svg"
+    },
+    {
+      "id": "catalog_discord_partner_svg",
+      "description": "Discord Partner",
+      "icon": "discord-partner.svg"
+    },
+    {
+      "id": "catalog_discord_staff_svg",
+      "description": "Discord Staff",
+      "icon": "discord-staff.svg"
+    },
+    {
+      "id": "catalog_fame_bug_bot_bug_hunter_png",
+      "description": "Fame / Bug Bot Bug Hunter",
+      "icon": "fame/bug-bot-bug-hunter.png"
+    },
+    {
+      "id": "catalog_fame_dbug_bug_hunter_png",
+      "description": "Fame / Dbug Bug Hunter",
+      "icon": "fame/dbug-bug-hunter.png"
+    },
+    {
+      "id": "catalog_fame_gear_mod_png",
+      "description": "Fame / Gear Mod",
+      "icon": "fame/gear-mod.png"
+    },
+    {
+      "id": "catalog_fame_hypebot_events_png",
+      "description": "Fame / Hypebot Events",
+      "icon": "fame/hypebot-events.png"
+    },
+    {
+      "id": "catalog_fame_sapphire_mod_png",
+      "description": "Fame / Sapphire Mod",
+      "icon": "fame/sapphire-mod.png"
+    },
+    {
+      "id": "catalog_fame_spongetext_staff_png",
+      "description": "Fame / Spongetext Staff",
+      "icon": "fame/spongetext-staff.png"
+    },
+    {
+      "id": "catalog_fame_wumpus_png",
+      "description": "Fame / Wumpus",
+      "icon": "fame/wumpus.png"
+    },
+    {
+      "id": "catalog_game_time_casual_svg",
+      "description": "Game Time / Casual",
+      "icon": "game-time/casual.svg"
+    },
+    {
+      "id": "catalog_game_time_committed_svg",
+      "description": "Game Time / Committed",
+      "icon": "game-time/committed.svg"
+    },
+    {
+      "id": "catalog_game_time_dedicated_svg",
+      "description": "Game Time / Dedicated",
+      "icon": "game-time/dedicated.svg"
+    },
+    {
+      "id": "catalog_game_time_devoted_svg",
+      "description": "Game Time / Devoted",
+      "icon": "game-time/devoted.svg"
+    },
+    {
+      "id": "catalog_game_time_eternal_svg",
+      "description": "Game Time / Eternal",
+      "icon": "game-time/eternal.svg"
+    },
+    {
+      "id": "catalog_game_time_ironclad_svg",
+      "description": "Game Time / Ironclad",
+      "icon": "game-time/ironclad.svg"
+    },
+    {
+      "id": "catalog_game_time_recreational_svg",
+      "description": "Game Time / Recreational",
+      "icon": "game-time/recreational.svg"
+    },
+    {
+      "id": "catalog_game_time_seasoned_svg",
+      "description": "Game Time / Seasoned",
+      "icon": "game-time/seasoned.svg"
+    },
+    {
+      "id": "catalog_game_time_serious_svg",
+      "description": "Game Time / Serious",
+      "icon": "game-time/serious.svg"
+    },
+    {
+      "id": "catalog_game_time_unshakeable_svg",
+      "description": "Game Time / Unshakeable",
+      "icon": "game-time/unshakeable.svg"
+    },
+    {
+      "id": "catalog_game_variety_adventurer_svg",
+      "description": "Game Variety / Adventurer",
+      "icon": "game-variety/adventurer.svg"
+    },
+    {
+      "id": "catalog_game_variety_dabbler_svg",
+      "description": "Game Variety / Dabbler",
+      "icon": "game-variety/dabbler.svg"
+    },
+    {
+      "id": "catalog_game_variety_enthusiast_svg",
+      "description": "Game Variety / Enthusiast",
+      "icon": "game-variety/enthusiast.svg"
+    },
+    {
+      "id": "catalog_game_variety_explorer_svg",
+      "description": "Game Variety / Explorer",
+      "icon": "game-variety/explorer.svg"
+    },
+    {
+      "id": "catalog_game_variety_maverick_svg",
+      "description": "Game Variety / Maverick",
+      "icon": "game-variety/maverick.svg"
+    },
+    {
+      "id": "catalog_game_variety_polymath_svg",
+      "description": "Game Variety / Polymath",
+      "icon": "game-variety/polymath.svg"
+    },
+    {
+      "id": "catalog_game_variety_ranger_svg",
+      "description": "Game Variety / Ranger",
+      "icon": "game-variety/ranger.svg"
+    },
+    {
+      "id": "catalog_game_variety_sampler_svg",
+      "description": "Game Variety / Sampler",
+      "icon": "game-variety/sampler.svg"
+    },
+    {
+      "id": "catalog_game_variety_universalist_svg",
+      "description": "Game Variety / Universalist",
+      "icon": "game-variety/universalist.svg"
+    },
+    {
+      "id": "catalog_game_variety_voyager_svg",
+      "description": "Game Variety / Voyager",
+      "icon": "game-variety/voyager.svg"
+    },
+    {
+      "id": "catalog_gifting_champion_png",
+      "description": "Gifting / Champion",
+      "icon": "gifting/champion.png"
+    },
+    {
+      "id": "catalog_gifting_hero_png",
+      "description": "Gifting / Hero",
+      "icon": "gifting/hero.png"
+    },
+    {
+      "id": "catalog_gifting_icon_png",
+      "description": "Gifting / Icon",
+      "icon": "gifting/icon.png"
+    },
+    {
+      "id": "catalog_gifting_legend_png",
+      "description": "Gifting / Legend",
+      "icon": "gifting/legend.png"
+    },
+    {
+      "id": "catalog_gifting_luminary_png",
+      "description": "Gifting / Luminary",
+      "icon": "gifting/luminary.png"
+    },
+    {
+      "id": "catalog_gifting_patron_png",
+      "description": "Gifting / Patron",
+      "icon": "gifting/patron.png"
+    },
+    {
+      "id": "catalog_golden_hype_squad_balance_svg",
+      "description": "Golden Hype Squad Balance",
+      "icon": "golden-hype-squad-balance.svg"
+    },
+    {
+      "id": "catalog_guilds_1_svg",
+      "description": "Guilds / 1",
+      "icon": "guilds/1.svg"
+    },
+    {
+      "id": "catalog_guilds_10_svg",
+      "description": "Guilds / 10",
+      "icon": "guilds/10.svg"
+    },
+    {
+      "id": "catalog_guilds_11_svg",
+      "description": "Guilds / 11",
+      "icon": "guilds/11.svg"
+    },
+    {
+      "id": "catalog_guilds_12_svg",
+      "description": "Guilds / 12",
+      "icon": "guilds/12.svg"
+    },
+    {
+      "id": "catalog_guilds_13_svg",
+      "description": "Guilds / 13",
+      "icon": "guilds/13.svg"
+    },
+    {
+      "id": "catalog_guilds_14_svg",
+      "description": "Guilds / 14",
+      "icon": "guilds/14.svg"
+    },
+    {
+      "id": "catalog_guilds_15_svg",
+      "description": "Guilds / 15",
+      "icon": "guilds/15.svg"
+    },
+    {
+      "id": "catalog_guilds_16_svg",
+      "description": "Guilds / 16",
+      "icon": "guilds/16.svg"
+    },
+    {
+      "id": "catalog_guilds_17_svg",
+      "description": "Guilds / 17",
+      "icon": "guilds/17.svg"
+    },
+    {
+      "id": "catalog_guilds_18_svg",
+      "description": "Guilds / 18",
+      "icon": "guilds/18.svg"
+    },
+    {
+      "id": "catalog_guilds_19_svg",
+      "description": "Guilds / 19",
+      "icon": "guilds/19.svg"
+    },
+    {
+      "id": "catalog_guilds_2_svg",
+      "description": "Guilds / 2",
+      "icon": "guilds/2.svg"
+    },
+    {
+      "id": "catalog_guilds_20_svg",
+      "description": "Guilds / 20",
+      "icon": "guilds/20.svg"
+    },
+    {
+      "id": "catalog_guilds_21_svg",
+      "description": "Guilds / 21",
+      "icon": "guilds/21.svg"
+    },
+    {
+      "id": "catalog_guilds_22_svg",
+      "description": "Guilds / 22",
+      "icon": "guilds/22.svg"
+    },
+    {
+      "id": "catalog_guilds_23_svg",
+      "description": "Guilds / 23",
+      "icon": "guilds/23.svg"
+    },
+    {
+      "id": "catalog_guilds_24_svg",
+      "description": "Guilds / 24",
+      "icon": "guilds/24.svg"
+    },
+    {
+      "id": "catalog_guilds_25_svg",
+      "description": "Guilds / 25",
+      "icon": "guilds/25.svg"
+    },
+    {
+      "id": "catalog_guilds_26_svg",
+      "description": "Guilds / 26",
+      "icon": "guilds/26.svg"
+    },
+    {
+      "id": "catalog_guilds_27_svg",
+      "description": "Guilds / 27",
+      "icon": "guilds/27.svg"
+    },
+    {
+      "id": "catalog_guilds_28_svg",
+      "description": "Guilds / 28",
+      "icon": "guilds/28.svg"
+    },
+    {
+      "id": "catalog_guilds_29_svg",
+      "description": "Guilds / 29",
+      "icon": "guilds/29.svg"
+    },
+    {
+      "id": "catalog_guilds_3_svg",
+      "description": "Guilds / 3",
+      "icon": "guilds/3.svg"
+    },
+    {
+      "id": "catalog_guilds_30_svg",
+      "description": "Guilds / 30",
+      "icon": "guilds/30.svg"
+    },
+    {
+      "id": "catalog_guilds_31_svg",
+      "description": "Guilds / 31",
+      "icon": "guilds/31.svg"
+    },
+    {
+      "id": "catalog_guilds_32_svg",
+      "description": "Guilds / 32",
+      "icon": "guilds/32.svg"
+    },
+    {
+      "id": "catalog_guilds_33_svg",
+      "description": "Guilds / 33",
+      "icon": "guilds/33.svg"
+    },
+    {
+      "id": "catalog_guilds_34_svg",
+      "description": "Guilds / 34",
+      "icon": "guilds/34.svg"
+    },
+    {
+      "id": "catalog_guilds_35_svg",
+      "description": "Guilds / 35",
+      "icon": "guilds/35.svg"
+    },
+    {
+      "id": "catalog_guilds_36_svg",
+      "description": "Guilds / 36",
+      "icon": "guilds/36.svg"
+    },
+    {
+      "id": "catalog_guilds_37_svg",
+      "description": "Guilds / 37",
+      "icon": "guilds/37.svg"
+    },
+    {
+      "id": "catalog_guilds_38_svg",
+      "description": "Guilds / 38",
+      "icon": "guilds/38.svg"
+    },
+    {
+      "id": "catalog_guilds_39_svg",
+      "description": "Guilds / 39",
+      "icon": "guilds/39.svg"
+    },
+    {
+      "id": "catalog_guilds_4_svg",
+      "description": "Guilds / 4",
+      "icon": "guilds/4.svg"
+    },
+    {
+      "id": "catalog_guilds_40_svg",
+      "description": "Guilds / 40",
+      "icon": "guilds/40.svg"
+    },
+    {
+      "id": "catalog_guilds_41_svg",
+      "description": "Guilds / 41",
+      "icon": "guilds/41.svg"
+    },
+    {
+      "id": "catalog_guilds_5_svg",
+      "description": "Guilds / 5",
+      "icon": "guilds/5.svg"
+    },
+    {
+      "id": "catalog_guilds_6_svg",
+      "description": "Guilds / 6",
+      "icon": "guilds/6.svg"
+    },
+    {
+      "id": "catalog_guilds_7_svg",
+      "description": "Guilds / 7",
+      "icon": "guilds/7.svg"
+    },
+    {
+      "id": "catalog_guilds_8_svg",
+      "description": "Guilds / 8",
+      "icon": "guilds/8.svg"
+    },
+    {
+      "id": "catalog_guilds_9_svg",
+      "description": "Guilds / 9",
+      "icon": "guilds/9.svg"
+    },
+    {
+      "id": "catalog_hype_squad_balance_svg",
+      "description": "Hype Squad Balance",
+      "icon": "hype-squad-balance.svg"
+    },
+    {
+      "id": "catalog_hype_squad_bravery_svg",
+      "description": "Hype Squad Bravery",
+      "icon": "hype-squad-bravery.svg"
+    },
+    {
+      "id": "catalog_hype_squad_brilliance_svg",
+      "description": "Hype Squad Brilliance",
+      "icon": "hype-squad-brilliance.svg"
+    },
+    {
+      "id": "catalog_hype_squad_events_svg",
+      "description": "Hype Squad Events",
+      "icon": "hype-squad-events.svg"
+    },
+    {
+      "id": "catalog_koth_hype_squad_balance_svg",
+      "description": "Koth Hype Squad Balance",
+      "icon": "koth-hype-squad-balance.svg"
+    },
+    {
+      "id": "catalog_last_meadow_png",
+      "description": "Last Meadow",
+      "icon": "last-meadow.png"
+    },
+    {
+      "id": "catalog_old_discord_mod_svg",
+      "description": "Old Discord Mod",
+      "icon": "old-discord-mod.svg"
+    },
+    {
+      "id": "catalog_old_discord_nitro_svg",
+      "description": "Old Discord Nitro",
+      "icon": "old-discord-nitro.svg"
+    },
+    {
+      "id": "catalog_old_discord_partner_png",
+      "description": "Old Discord Partner",
+      "icon": "old-discord-partner.png"
+    },
+    {
+      "id": "catalog_orb_svg",
+      "description": "Orb",
+      "icon": "orb.svg"
+    },
+    {
+      "id": "catalog_premium_bot_png",
+      "description": "Premium Bot",
+      "icon": "premium-bot.png"
+    },
+    {
+      "id": "catalog_quest_png",
+      "description": "Quest",
+      "icon": "quest.png"
+    },
+    {
+      "id": "catalog_server_boost_0_svg",
+      "description": "Server / Boost 0",
+      "icon": "server/boost-0.svg"
+    },
+    {
+      "id": "catalog_server_boost_1_svg",
+      "description": "Server / Boost 1",
+      "icon": "server/boost-1.svg"
+    },
+    {
+      "id": "catalog_server_boost_2_dark_svg",
+      "description": "Server / Boost 2 Dark",
+      "icon": "server/boost-2-dark.svg"
+    },
+    {
+      "id": "catalog_server_boost_2_light_svg",
+      "description": "Server / Boost 2 Light",
+      "icon": "server/boost-2-light.svg"
+    },
+    {
+      "id": "catalog_server_boost_3_dark_svg",
+      "description": "Server / Boost 3 Dark",
+      "icon": "server/boost-3-dark.svg"
+    },
+    {
+      "id": "catalog_server_boost_3_light_svg",
+      "description": "Server / Boost 3 Light",
+      "icon": "server/boost-3-light.svg"
+    },
+    {
+      "id": "catalog_server_community_boosted_svg",
+      "description": "Server / Community Boosted",
+      "icon": "server/community-boosted.svg"
+    },
+    {
+      "id": "catalog_server_community_dark_svg",
+      "description": "Server / Community Dark",
+      "icon": "server/community-dark.svg"
+    },
+    {
+      "id": "catalog_server_community_light_svg",
+      "description": "Server / Community Light",
+      "icon": "server/community-light.svg"
+    },
+    {
+      "id": "catalog_server_crown_svg",
+      "description": "Server / Crown",
+      "icon": "server/crown.svg"
+    },
+    {
+      "id": "catalog_server_discoverable_boosted_svg",
+      "description": "Server / Discoverable Boosted",
+      "icon": "server/discoverable-boosted.svg"
+    },
+    {
+      "id": "catalog_server_discoverable_dark_svg",
+      "description": "Server / Discoverable Dark",
+      "icon": "server/discoverable-dark.svg"
+    },
+    {
+      "id": "catalog_server_discoverable_light_svg",
+      "description": "Server / Discoverable Light",
+      "icon": "server/discoverable-light.svg"
+    },
+    {
+      "id": "catalog_server_new_here_svg",
+      "description": "Server / New Here",
+      "icon": "server/new-here.svg"
+    },
+    {
+      "id": "catalog_server_partnered_svg",
+      "description": "Server / Partnered",
+      "icon": "server/partnered.svg"
+    },
+    {
+      "id": "catalog_server_staff_svg",
+      "description": "Server / Staff",
+      "icon": "server/staff.svg"
+    },
+    {
+      "id": "catalog_server_verified_svg",
+      "description": "Server / Verified",
+      "icon": "server/verified.svg"
+    },
+    {
+      "id": "catalog_special_app_svg",
+      "description": "Special / App",
+      "icon": "special/app.svg"
+    },
+    {
+      "id": "catalog_special_beta_svg",
+      "description": "Special / Beta",
+      "icon": "special/beta.svg"
+    },
+    {
+      "id": "catalog_special_bot_svg",
+      "description": "Special / Bot",
+      "icon": "special/bot.svg"
+    },
+    {
+      "id": "catalog_special_dark_ai_svg",
+      "description": "Special / Dark Ai",
+      "icon": "special/dark-ai.svg"
+    },
+    {
+      "id": "catalog_special_discord_lootbox_svg",
+      "description": "Special / Discord Lootbox",
+      "icon": "special/discord-lootbox.svg"
+    },
+    {
+      "id": "catalog_special_light_ai_svg",
+      "description": "Special / Light Ai",
+      "icon": "special/light-ai.svg"
+    },
+    {
+      "id": "catalog_special_official_svg",
+      "description": "Special / Official",
+      "icon": "special/official.svg"
+    },
+    {
+      "id": "catalog_special_original_poster_svg",
+      "description": "Special / Original Poster",
+      "icon": "special/original-poster.svg"
+    },
+    {
+      "id": "catalog_special_server_svg",
+      "description": "Special / Server",
+      "icon": "special/server.svg"
+    },
+    {
+      "id": "catalog_special_system_svg",
+      "description": "Special / System",
+      "icon": "special/system.svg"
+    },
+    {
+      "id": "catalog_special_verified_app_svg",
+      "description": "Special / Verified App",
+      "icon": "special/verified-app.svg"
+    },
+    {
+      "id": "catalog_special_verified_bot_svg",
+      "description": "Special / Verified Bot",
+      "icon": "special/verified-bot.svg"
+    },
+    {
+      "id": "catalog_streaming_breakout_svg",
+      "description": "Streaming / Breakout",
+      "icon": "streaming/breakout.svg"
+    },
+    {
+      "id": "catalog_streaming_fledgling_svg",
+      "description": "Streaming / Fledgling",
+      "icon": "streaming/fledgling.svg"
+    },
+    {
+      "id": "catalog_streaming_headliner_svg",
+      "description": "Streaming / Headliner",
+      "icon": "streaming/headliner.svg"
+    },
+    {
+      "id": "catalog_streaming_newcomer_svg",
+      "description": "Streaming / Newcomer",
+      "icon": "streaming/newcomer.svg"
+    },
+    {
+      "id": "catalog_streaming_phenomenon_svg",
+      "description": "Streaming / Phenomenon",
+      "icon": "streaming/phenomenon.svg"
+    },
+    {
+      "id": "catalog_streaming_sensation_svg",
+      "description": "Streaming / Sensation",
+      "icon": "streaming/sensation.svg"
+    },
+    {
+      "id": "catalog_streaming_standout_svg",
+      "description": "Streaming / Standout",
+      "icon": "streaming/standout.svg"
+    },
+    {
+      "id": "catalog_streaming_star_svg",
+      "description": "Streaming / Star",
+      "icon": "streaming/star.svg"
+    },
+    {
+      "id": "catalog_streaming_trendsetter_svg",
+      "description": "Streaming / Trendsetter",
+      "icon": "streaming/trendsetter.svg"
+    },
+    {
+      "id": "catalog_streaming_visionary_svg",
+      "description": "Streaming / Visionary",
+      "icon": "streaming/visionary.svg"
+    },
+    {
+      "id": "catalog_subscriptions_badges_bronze_png",
+      "description": "Subscriptions / Badges / Bronze",
+      "icon": "subscriptions/badges/bronze.png"
+    },
+    {
+      "id": "catalog_subscriptions_badges_diamond_png",
+      "description": "Subscriptions / Badges / Diamond",
+      "icon": "subscriptions/badges/diamond.png"
+    },
+    {
+      "id": "catalog_subscriptions_badges_emerald_png",
+      "description": "Subscriptions / Badges / Emerald",
+      "icon": "subscriptions/badges/emerald.png"
+    },
+    {
+      "id": "catalog_subscriptions_badges_gold_png",
+      "description": "Subscriptions / Badges / Gold",
+      "icon": "subscriptions/badges/gold.png"
+    },
+    {
+      "id": "catalog_subscriptions_badges_opal_png",
+      "description": "Subscriptions / Badges / Opal",
+      "icon": "subscriptions/badges/opal.png"
+    },
+    {
+      "id": "catalog_subscriptions_badges_platinum_png",
+      "description": "Subscriptions / Badges / Platinum",
+      "icon": "subscriptions/badges/platinum.png"
+    },
+    {
+      "id": "catalog_subscriptions_badges_ruby_png",
+      "description": "Subscriptions / Badges / Ruby",
+      "icon": "subscriptions/badges/ruby.png"
+    },
+    {
+      "id": "catalog_subscriptions_badges_silver_png",
+      "description": "Subscriptions / Badges / Silver",
+      "icon": "subscriptions/badges/silver.png"
+    },
+    {
+      "id": "catalog_subscriptions_bronze_svg",
+      "description": "Subscriptions / Bronze",
+      "icon": "subscriptions/bronze.svg"
+    },
+    {
+      "id": "catalog_subscriptions_diamond_svg",
+      "description": "Subscriptions / Diamond",
+      "icon": "subscriptions/diamond.svg"
+    },
+    {
+      "id": "catalog_subscriptions_emerald_svg",
+      "description": "Subscriptions / Emerald",
+      "icon": "subscriptions/emerald.svg"
+    },
+    {
+      "id": "catalog_subscriptions_gold_svg",
+      "description": "Subscriptions / Gold",
+      "icon": "subscriptions/gold.svg"
+    },
+    {
+      "id": "catalog_subscriptions_legacy_bronze_svg",
+      "description": "Subscriptions / Legacy / Bronze",
+      "icon": "subscriptions/legacy/bronze.svg"
+    },
+    {
+      "id": "catalog_subscriptions_legacy_diamond_svg",
+      "description": "Subscriptions / Legacy / Diamond",
+      "icon": "subscriptions/legacy/diamond.svg"
+    },
+    {
+      "id": "catalog_subscriptions_legacy_emerald_svg",
+      "description": "Subscriptions / Legacy / Emerald",
+      "icon": "subscriptions/legacy/emerald.svg"
+    },
+    {
+      "id": "catalog_subscriptions_legacy_fire_svg",
+      "description": "Subscriptions / Legacy / Fire",
+      "icon": "subscriptions/legacy/fire.svg"
+    },
+    {
+      "id": "catalog_subscriptions_legacy_gold_svg",
+      "description": "Subscriptions / Legacy / Gold",
+      "icon": "subscriptions/legacy/gold.svg"
+    },
+    {
+      "id": "catalog_subscriptions_legacy_platinum_svg",
+      "description": "Subscriptions / Legacy / Platinum",
+      "icon": "subscriptions/legacy/platinum.svg"
+    },
+    {
+      "id": "catalog_subscriptions_legacy_ruby_svg",
+      "description": "Subscriptions / Legacy / Ruby",
+      "icon": "subscriptions/legacy/ruby.svg"
+    },
+    {
+      "id": "catalog_subscriptions_legacy_silver_svg",
+      "description": "Subscriptions / Legacy / Silver",
+      "icon": "subscriptions/legacy/silver.svg"
+    },
+    {
+      "id": "catalog_subscriptions_opal_svg",
+      "description": "Subscriptions / Opal",
+      "icon": "subscriptions/opal.svg"
+    },
+    {
+      "id": "catalog_subscriptions_platinum_svg",
+      "description": "Subscriptions / Platinum",
+      "icon": "subscriptions/platinum.svg"
+    },
+    {
+      "id": "catalog_subscriptions_ruby_svg",
+      "description": "Subscriptions / Ruby",
+      "icon": "subscriptions/ruby.svg"
+    },
+    {
+      "id": "catalog_subscriptions_silver_svg",
+      "description": "Subscriptions / Silver",
+      "icon": "subscriptions/silver.svg"
+    },
+    {
+      "id": "catalog_supports_commands_svg",
+      "description": "Supports Commands",
+      "icon": "supports-commands.svg"
+    },
+    {
+      "id": "catalog_username_png",
+      "description": "Username",
+      "icon": "username.png"
+    }
+  ]
+}
