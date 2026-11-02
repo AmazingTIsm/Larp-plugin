@@ -19,13 +19,16 @@ const result=await build({entryPoints:["src/userplugins/cosmeticStudio/index.tsx
  b.onLoad({filter:/.*/,namespace:"stub"},a=>{
   let contents;
   if(a.path==="@utils/types")contents='export default x=>x; export const OptionType={BOOLEAN:1,STRING:2,CUSTOM:3,COMPONENT:4,NUMBER:5};';
-  else if(a.path==="@api/Settings")contents='export const Settings={plugins:{FakeNitro:{enabled:false}}}; export function definePluginSettings(def){return {store:Object.fromEntries(Object.entries(def).map(([k,v])=>[k,v.default])),use:()=>{}}}';
+  else if(a.path==="@api/Settings")contents='export const Settings={plugins:globalThis.__csPrefs=Object.fromEntries(["FakeNitro","TypingIndicator","TypingTweaks","FakeProfileThemes","Decor","CustomRPC"].map(name=>[name,{enabled:false}]))}; export function definePluginSettings(def){return {store:Object.fromEntries(Object.entries(def).map(([k,v])=>[k,v.default])),use:()=>{}}}';
   else if(a.path==="@components/ErrorBoundary")contents='export default {wrap:f=>f};';
   else if(a.path==="@components/Button")contents='export const Button=()=>null;';
   else if(a.path==="@components/Text")contents='export const Text=()=>null;';
   else if(a.path==="@webpack/common")contents=common;
   else if(a.path==="@utils/react")contents='export const useIntersection=()=>[()=>{},!!globalThis.__csIntersection];';
-  else if(a.path==="@plugins/fakeNitro")contents='export default {settings:{store:{}}};';
+  else if(a.path==="@api/PluginManager")contents='export const plugins=globalThis.__csPlugins=Object.fromEntries(["FakeNitro","TypingIndicator","TypingTweaks","FakeProfileThemes","Decor","CustomRPC"].map(name=>[name,{name,started:false,settings:{store:{}}}]));export function startPlugin(plugin){plugin.started=true;return true;} export const startDependenciesRecursive=()=>({restartNeeded:false,failures:[]});';
+  else if(a.path==="@components/settings/tabs/plugins/PluginModal")contents='export const openPluginModal=()=>{};';
+  else if(a.path==="@utils/discord")contents='export const copyWithToast=value=>{globalThis.__csCopied=value;};';
+  else if(a.path==="@plugins/customRPC")contents='export const setRpc=async(disable)=>{(globalThis.__csRpcCalls??=[]).push(disable);};';
   else if(a.path==="@webpack")contents='export const findStore=()=>null,waitFor=()=>{},filters={byCode:()=>true},findByCodeLazy=()=>()=>"",findByPropsLazy=()=>({});';
   else throw Error("Unexpected module "+a.path);
   return {contents,loader:"js"};
@@ -35,6 +38,44 @@ const mod={exports:{}};
 new Function("module","exports","require",result.outputFiles[0].text)(mod,mod.exports,createRequire(import.meta.url));
 const plugin=mod.exports.default;
 const store=plugin.settings.store;
+
+test("Nitro, typing and existing sharing integrations configure the intended Vencord plugins",()=>{
+ store.enabled=false;store.nativeLocalApply=false;
+ plugin.enableNitroCustomization();assert.equal(store.enabled,true);assert.equal(store.nativeLocalApply,true);
+ assert.equal(globalThis.__csPrefs.FakeNitro.enabled,true);
+ assert.equal(globalThis.__csPlugins.FakeNitro.settings.store.transformCompoundSentence,true);
+ assert.equal(globalThis.__csPlugins.FakeNitro.settings.store.disableEmbedPermissionCheck,undefined);
+ plugin.enableTypingFeatures();assert.equal(globalThis.__csPrefs.TypingIndicator.enabled,true);assert.equal(globalThis.__csPrefs.TypingTweaks.enabled,true);
+ assert.equal(globalThis.__csPlugins.TypingIndicator.settings.store.indicatorMode,3);
+ plugin.enableSharedThemes();assert.equal(globalThis.__csPrefs.FakeProfileThemes.enabled,true);
+ store.larpAvatarDecoration={skuId:'local',asset:'override'};store.hiddenAvatarDecoration=true;
+ plugin.enableSharedDecor();assert.equal(globalThis.__csPrefs.Decor.enabled,true);assert.equal(store.larpAvatarDecoration,null);assert.equal(store.hiddenAvatarDecoration,false);
+});
+
+test("native local Apply consumes profile colors and custom typing styles without server fields",()=>{
+ store.enabled=true;store.nativeLocalApply=true;
+ assert.deepEqual(plugin.handleNativeSelection({themeColors:[0x123456,0xabcdef],customTypingIndicatorStyle:{id:'style'},bio:'Keep bio'}),{bio:'Keep bio'});
+ assert.deepEqual(plugin.getLocalProfileTheme(),[0x123456,0xabcdef]);assert.equal(plugin.getLocalProfileTheme(),plugin.getLocalProfileTheme());
+ const user={id:'own',themeColors:[0,0],typingIndicatorStyle:null};const own=plugin.withLarpUser(user);
+ assert.deepEqual(own.themeColors,[0x123456,0xabcdef]);assert.deepEqual(own.typingIndicatorStyle,{id:'style'});
+ assert.deepEqual(user.themeColors,[0,0]);assert.equal(user.typingIndicatorStyle,null);
+ const other={...user,id:'other'};assert.equal(plugin.withLarpUser(other),other);
+ plugin.handleNativeSelection({themeColors:null,customTypingIndicatorStyle:null});assert.equal(plugin.getLocalProfileTheme(),null);
+ store.localTypingOverride=false;store.localTypingStyle=null;
+});
+
+test("RPC preset save is local and Apply updates the existing CustomRPC activity",async()=>{
+ const rpc=globalThis.__csPlugins.CustomRPC.settings.store;
+ Object.assign(rpc,{appName:'My activity',type:0,details:'Editing',token:'never save'});
+ globalThis.__csRpcCalls=[];
+ plugin.saveRpcPreset('Work');assert.equal(globalThis.__csRpcCalls.length,0);
+ assert.equal(store.rpcPresets[0].values.appName,'My activity');assert.equal(store.rpcPresets[0].values.token,undefined);
+ rpc.details='Updated';plugin.saveRpcPreset('Work');assert.equal(store.rpcPresets.length,1);
+ assert.throws(()=>plugin.saveRpcPreset('   '));
+ await plugin.applyCustomRpc();assert.deepEqual(globalThis.__csRpcCalls,[true,undefined]);
+ assert.equal(globalThis.__csPrefs.CustomRPC.enabled,true);assert.equal(rpc.enablePresence,true);
+ store.rpcPresets=[];
+});
 
 test("guild tag Apply uses every bundled guild icon without a server ID and remains local",()=>{
  store.enabled=true;

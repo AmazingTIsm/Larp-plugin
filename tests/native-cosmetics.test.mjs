@@ -4,6 +4,39 @@ import {installLocalPurchasePreview,consumeLocalCosmetics} from '../src/userplug
 import {nitroPreview,localGuildTag} from '../src/userplugins/cosmeticStudio/model.ts';
 import {validateLocalImage,readLocalImage} from '../src/userplugins/cosmeticStudio/localImages.ts';
 import {groupBadgeEntries,nativeNitroBadge,isProfileBadge} from '../src/userplugins/cosmeticStudio/badgeGroups.ts';
+import {profileThemeColors,encodeCompatibleTheme,enableBuiltinFeatures} from '../src/userplugins/cosmeticStudio/nitroFeatures.ts';
+import {snapshotRpc,loadRpcPreset,rpcDuration} from '../src/userplugins/cosmeticStudio/rpcPresets.ts';
+
+test('profile theme sharing encodes colors compatible with Vencord FakeProfileThemes',()=>{
+ assert.deepEqual(profileThemeColors('#123456','#ABCDEF'),[0x123456,0xabcdef]);
+ assert.equal(profileThemeColors('invalid','#abcdef'),null);
+ const code=encodeCompatibleTheme('#123456','#abcdef');
+ const ascii=Array.from(code).filter(char=>char.codePointAt(0)>=0xe0000).map(char=>String.fromCodePoint(char.codePointAt(0)-0xe0000)).join('');
+ assert.equal(ascii,'[#123456,#abcdef]');assert.equal(encodeCompatibleTheme('bad','#abcdef'),'');
+});
+
+test('optional integration enablement skips unavailable plugins and preserves unrelated preferences',()=>{
+ const preferences={TypingIndicator:{enabled:false,includeMutedChannels:false,includeBlockedUsers:false}};
+ const plugins={TypingIndicator:{settings:{store:{includeMutedChannels:false}}}};
+ assert.deepEqual(enableBuiltinFeatures(['TypingIndicator','Missing'],preferences,plugins,{TypingIndicator:{indicatorMode:3}}),['TypingIndicator']);
+ assert.equal(preferences.TypingIndicator.enabled,true);assert.equal(preferences.TypingIndicator.includeBlockedUsers,false);
+ assert.equal(plugins.TypingIndicator.settings.store.includeMutedChannels,false);
+});
+
+test('RPC presets save only activity fields and clear stale images, buttons and timestamps',()=>{
+ const snapshot=snapshotRpc({appName:'Game',type:0,startTime:100,token:'secret',enabled:true,callback:()=>{}});
+ assert.deepEqual(snapshot,{appName:'Game',type:0,startTime:100});
+ const target={appName:'Old',imageBig:'old-image',buttonOneURL:'https://example.com',enablePresence:false};
+ loadRpcPreset(target,{name:'New',values:{appName:'New',type:3,token:'do not load'}});
+ assert.equal(target.appName,'New');assert.equal(target.type,3);assert.equal(target.imageBig,undefined);assert.equal(target.buttonOneURL,undefined);
+ assert.equal(target.enablePresence,false);assert.equal(target.token,undefined);
+});
+
+test('RPC elapsed and countdown controls use millisecond timestamps and reject invalid durations',()=>{
+ assert.deepEqual(rpcDuration(30,false,18000000),{timestampMode:3,startTime:16200000,endTime:undefined});
+ assert.deepEqual(rpcDuration(5,true,18000000),{timestampMode:3,startTime:18000000,endTime:18300000});
+ for(const value of [-1,Infinity,NaN,52560001])assert.throws(()=>rpcDuration(value,false));
+});
 
 test('profile badge catalog excludes server, bot, guild-tag and miscellaneous artwork',()=>{
  for(const icon of ['server/boost-1.svg','guilds/1.svg','special/bot.svg','fame/wumpus.png','automod.svg','supports-commands.svg','premium-bot.png'])assert.equal(isProfileBadge({id:'catalog',description:'',icon}),false,icon);

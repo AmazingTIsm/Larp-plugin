@@ -10,7 +10,12 @@ import {guildTagIcons,resolveLocalGuildTagIcon} from "./guildTags";
 import {badgeFamily,groupBadgeEntries,nativeNitroBadge,isProfileBadge,nativeBadgeDirectoryId,localBadgeDirectoryEntry} from "./badgeGroups";
 import {installLocalPurchasePreview,consumeLocalCosmetics,type PurchaseStore,type CosmeticProduct} from "./nativePicker";
 import {Settings} from "@api/Settings";
-import FakeNitro from "@plugins/fakeNitro";
+import {plugins,startPlugin,startDependenciesRecursive} from "@api/PluginManager";
+import {setRpc} from "@plugins/customRPC";
+import {openPluginModal} from "@components/settings/tabs/plugins/PluginModal";
+import {copyWithToast} from "@utils/discord";
+import {enableBuiltinFeatures,fakeNitroOptions,typingOptions,profileThemeColors,encodeCompatibleTheme} from "./nitroFeatures";
+import {snapshotRpc,loadRpcPreset,rpcDuration,type RpcPreset} from "./rpcPresets";
 
 import definePlugin, { OptionType } from "@utils/types";
 import { definePluginSettings } from "@api/Settings";
@@ -290,6 +295,12 @@ const settings = definePluginSettings({
     guildTagText:{type:OptionType.STRING,description:"Local tag text",default:""},
     guildTagId:{type:OptionType.STRING,description:"Guild ID for local tag",default:""},
     guildTagBadge:{type:OptionType.STRING,description:"Optional guild badge asset hash",default:""},
+    localThemeEnabled:{type:OptionType.BOOLEAN,description:"Local profile theme colors",default:false},
+    localThemePrimary:{type:OptionType.STRING,description:"Local profile primary color",default:"#202024"},
+    localThemeAccent:{type:OptionType.STRING,description:"Local profile accent color",default:"#b6a0ff"},
+    rpcPresets:{type:OptionType.CUSTOM,default:[] as RpcPreset[]},
+    localTypingOverride:{type:OptionType.BOOLEAN,description:"Local custom typing style override",default:false},
+    localTypingStyle:{type:OptionType.CUSTOM,default:null as Record<string,unknown>|string|null},
     nameStylesEnabled: {type:OptionType.BOOLEAN, description:"Override your display-name style locally", default:false},
     nameFont: {type:OptionType.NUMBER, description:"Discord display-name font ID", default:0},
     nameEffect: {type:OptionType.NUMBER, description:"Discord display-name effect ID", default:0},
@@ -455,6 +466,7 @@ const ModalTabs = {
     GuildTag: 7,
     Nitro: 8,
     Images: 9,
+    RichPresence: 10,
 } as const;
 const DecorationSubTabs = { Avatar: 0, Banner: 1, Nameplate: 2, Frames:3 } as const;
 const SHOP_CACHE_MS = 30 * 60 * 1000;
@@ -689,6 +701,8 @@ function resetLarpConfig() {
     settings.store.localFrameOverride=false;settings.store.localProfileFrame=null;settings.store.nitroYears=-1;settings.store.guildTagEnabled=false;settings.store.guildTagText="";settings.store.guildTagId="";settings.store.guildTagBadge="";settings.store.preserveNameFont=true;
     settings.store.customDisplayName="";
     settings.store.nameStylesEnabled=false;
+    settings.store.localThemeEnabled=false;settings.store.localThemePrimary="#202024";settings.store.localThemeAccent="#b6a0ff";
+    settings.store.localTypingOverride=false;settings.store.localTypingStyle=null;
     settings.store.nameFont=0;settings.store.nameEffect=0;settings.store.nameColor="#b6a0ff";settings.store.stackBadgeStages=false;
     applyLarpExportData({
         customUsername: "",
@@ -2489,6 +2503,10 @@ function wrapDisplayProfile<T extends { userId: string; getBadges(): unknown[]; 
 
     const proxy = new Proxy(profile, {
         get(target, prop, receiver) {
+            const localTheme = getLocalProfileTheme();
+            if (localTheme && prop==="themeColors") return localTheme;
+            if (localTheme && (prop==="accentColor" || prop==="primaryColor")) return localTheme[0];
+            if ((settings.store.nativeLocalApply || localTheme) && (prop==="canUsePremiumProfileCustomization" || prop==="canEditThemes")) return true;
             if (prop === "getBadges") {
                 return () => mergeLarpDisplayBadges({ userId }, origGetBadges() as Array<{
                     id?: string;
@@ -2497,6 +2515,7 @@ function wrapDisplayProfile<T extends { userId: string; getBadges(): unknown[]; 
                     iconSrc?: string;
                 }>);
             }
+            if ((prop==="typingIndicatorStyle" || prop==="customTypingIndicatorStyle") && settings.store.localTypingOverride) return settings.store.localTypingStyle;
             if(prop==="premiumType"&&(settings.store.nitroYears>=0||settings.store.nativeLocalApply))return 2;
             if(prop==="banner"&&settings.store.localBannerImage)return "cosmetic-studio-local-banner";
             if((prop==="getBannerURL"||prop==="bannerURL")&&settings.store.localBannerImage)return prop==="getBannerURL"?()=>settings.store.localBannerImage:settings.store.localBannerImage;
@@ -2656,7 +2675,7 @@ function withLarpUser(user: User | null | undefined): User | null | undefined {
                 : !!realPlate
         ));
 
-    if (!needsUsername && !needsJoinDate && !needsDeco && !needsNameplate && !settings.store.nameStylesEnabled && !displayName && !settings.store.guildTagEnabled && !settings.store.localAvatarImage && !settings.store.localBannerImage && settings.store.nitroYears<0 && !settings.store.nativeLocalApply) return user;
+    if (!needsUsername && !needsJoinDate && !needsDeco && !needsNameplate && !settings.store.nameStylesEnabled && !displayName && !settings.store.guildTagEnabled && !settings.store.localAvatarImage && !settings.store.localBannerImage && settings.store.nitroYears<0 && !settings.store.nativeLocalApply && !settings.store.localThemeEnabled && !settings.store.localTypingOverride) return user;
 
     const cacheKey = `${settings.store.localAvatarImage.length}:${settings.store.localBannerImage.length}:${settings.store.guildTagEnabled}:${settings.store.guildTagText}:${settings.store.guildTagId}:${settings.store.guildTagBadge}:${settings.store.preserveNameFont}:${displayName}:${settings.store.nameStylesEnabled}:${settings.store.nameFont}:${settings.store.nameEffect}:${settings.store.nameColor}:${userProxyGeneration}:${custom ?? ""}:${settings.store.customJoinDate?.trim() ?? ""}:${hideDeco ? "hide-deco" : (deco?.skuId ?? "")}:${hidePlate ? "hide-plate" : (hasLarpNameplate ? `${plate!.skuId}:${plate!.asset}:${canSpoofNameplate}` : "")}`;
     const cached = usernameProxyCache.get(user);
@@ -2666,10 +2685,14 @@ function withLarpUser(user: User | null | undefined): User | null | undefined {
 
     const proxy = new Proxy(user, {
         get(target, prop, receiver) {
+            const localTheme = getLocalProfileTheme();
+            if (localTheme && prop==="themeColors") return localTheme;
+            if (localTheme && (prop==="accentColor" || prop==="primaryColor")) return localTheme[0];
+            if ((settings.store.nativeLocalApply || localTheme) && (prop==="canUsePremiumProfileCustomization" || prop==="canEditThemes")) return true;
+            if ((prop==="typingIndicatorStyle" || prop==="customTypingIndicatorStyle") && settings.store.localTypingOverride) return settings.store.localTypingStyle;
             if(prop==="premiumType"&&(settings.store.nitroYears>=0||settings.store.nativeLocalApply))return 2;
             if(prop==="premiumSince"&&settings.store.nitroYears>=0)return nitroPreview(settings.store.nitroYears).since;
             if((prop==="getAvatarURL"||prop==="getAvatarSource")&&settings.store.localAvatarImage)return prop==="getAvatarURL"?()=>settings.store.localAvatarImage:()=>({uri:settings.store.localAvatarImage});
-            if(prop==="premiumType"&&(settings.store.nitroYears>=0||settings.store.nativeLocalApply))return 2;
             if(prop==="banner"&&settings.store.localBannerImage)return "cosmetic-studio-local-banner";
             if(prop === "displayNameStyles" && settings.store.nameStylesEnabled) {
                 return getLocalNameStyle(target.displayNameStyles);
@@ -5020,22 +5043,142 @@ const ImagesSection=ErrorBoundary.wrap(function ImagesSection(){
     </div>;
 },{noop:false});
 
+let localThemeCache: {key:string;colors:[number,number]|null} = {key:"",colors:null};
+function getLocalProfileTheme() {
+    if (!settings.store.enabled || !settings.store.localThemeEnabled) return null;
+    const key=`${settings.store.localThemePrimary}:${settings.store.localThemeAccent}`;
+    if (localThemeCache.key!==key) localThemeCache={key,colors:profileThemeColors(settings.store.localThemePrimary,settings.store.localThemeAccent)};
+    return localThemeCache.colors;
+}
+
+function openBuiltinSettings(name: string) {
+    const plugin=plugins[name];
+    if (plugin) openPluginModal(plugin);
+    else showToast({text:`${name} is unavailable in this Vencord build.`,variant:"critical"});
+}
+function enableNitroCustomization() {
+    settings.store.enabled=true;
+    settings.store.nativeLocalApply=true;
+    const enabled=enableBuiltinFeatures(["FakeNitro"],Settings.plugins,plugins,{FakeNitro:fakeNitroOptions});
+    triggerProfileRefresh();
+    showToast({text:enabled.length?"Local customization enabled. Restart Discord for FakeNitro patches.":"Local customization enabled; FakeNitro is unavailable in this build.",variant:"success"});
+}
+function enableTypingFeatures() {
+    const enabled=enableBuiltinFeatures(["TypingIndicator","TypingTweaks"],Settings.plugins,plugins,typingOptions);
+    showToast({text:enabled.length?`${enabled.join(" and ")} enabled. Restart Discord to load their patches.`:"Typing plugins are unavailable in this build.",variant:enabled.length?"success":"critical"});
+}
+function enableSharedThemes() {
+    const enabled=enableBuiltinFeatures(["FakeProfileThemes"],Settings.plugins,plugins);
+    showToast({text:enabled.length?"FakeProfileThemes enabled. Restart Discord, then paste your theme code into your bio to share it.":"FakeProfileThemes is unavailable in this build.",variant:enabled.length?"success":"critical"});
+}
+function enableSharedDecor() {
+    const enabled=enableBuiltinFeatures(["Decor"],Settings.plugins,plugins);
+    if (enabled.length) {
+        settings.store.larpAvatarDecoration=null;
+        settings.store.hiddenAvatarDecoration=false;
+        triggerProfileRefresh();
+    }
+    showToast({text:enabled.length?"Decor enabled; local decoration override cleared. Restart Discord and configure Decor to share a decoration.":"Decor is unavailable in this build.",variant:enabled.length?"success":"critical"});
+}
+
 const NitroSection=ErrorBoundary.wrap(function NitroSection(){
-    settings.use(["nitroYears"]);
+    settings.use(["nitroYears","nativeLocalApply","localThemeEnabled","localThemePrimary","localThemeAccent"]);
     return <div><FieldCard label="Nitro subscriber years" hint="Sets the local badge stage and subscriber-since date. Does not grant a subscription.">
         <TextInput type="number" min={0} max={100} value={String(Math.max(0,settings.store.nitroYears))} onChange={value=>{
             const years=Math.max(0,Math.min(100,Number(value)||0));settings.store.nitroYears=years;
             settings.store.addedBadges=settings.store.addedBadges.filter(id=>!KNOWN_BADGES[id]||badgeFamily({id,...KNOWN_BADGES[id]})!=="nitro");
             settings.store.addedBadges=[...settings.store.addedBadges,nitroPreview(years).id];triggerProfileRefresh();
         }}/><Button size="small" variant="secondary" onClick={()=>{settings.store.nitroYears=-1;settings.store.addedBadges=settings.store.addedBadges.filter(id=>!KNOWN_BADGES[id]||badgeFamily({id,...KNOWN_BADGES[id]})!=="nitro");triggerProfileRefresh();}}>Keep actual subscription date</Button>
-    </FieldCard><FieldCard label="Vencord FakeNitro" hint="Emoji/sticker link workarounds, local rendering and supported stream/theme options. Real upload limits, boosts and purchases remain server-controlled.">
-        <Button onClick={()=>{
-            Settings.plugins.FakeNitro.enabled=true;
-            FakeNitro.settings.store.enableEmojiBypass=true;FakeNitro.settings.store.enableStickerBypass=true;FakeNitro.settings.store.transformEmojis=true;FakeNitro.settings.store.transformStickers=true;FakeNitro.settings.store.enableStreamQualityBypass=true;
-            showToast({text:"FakeNitro enabled. Restart Discord to load its patches.",variant:"success"});
-        }}>Enable supported FakeNitro features</Button>
+    </FieldCard>
+    <FieldCard label="Nitro customization" hint="Local avatar/banner uploads, decorations, frames, effects, nameplates, name styles and profile colors. Real purchases, boosts and upload limits stay server-controlled.">
+        <Button onClick={enableNitroCustomization}>Enable local Nitro customization</Button>
+        <Forms.FormText>Use Images, Decorations, Name styles and Guild tag to customize your profile. Emoji and sticker workarounds send links that compatible clients can render.</Forms.FormText>
+        <Button size="small" variant="secondary" onClick={()=>openBuiltinSettings("FakeNitro")}>Emoji, sticker and stream options</Button>
+    </FieldCard>
+    <FieldCard label="Profile theme" hint="Choose your local primary and accent colors.">
+        <div style={{display:"flex",gap:16,marginBottom:12}}>
+            <label>Primary <input aria-label="Profile primary color" type="color" value={settings.store.localThemePrimary} onChange={event=>{settings.store.localThemePrimary=event.currentTarget.value;triggerProfileRefresh();}}/></label>
+            <label>Accent <input aria-label="Profile accent color" type="color" value={settings.store.localThemeAccent} onChange={event=>{settings.store.localThemeAccent=event.currentTarget.value;triggerProfileRefresh();}}/></label>
+        </div>
+        <Button size="small" onClick={()=>{settings.store.localThemeEnabled=!settings.store.localThemeEnabled;triggerProfileRefresh();}}>{settings.store.localThemeEnabled?"Use actual theme":"Apply local theme"}</Button>
+    </FieldCard>
+    <FieldCard label="Typing indicators" hint="Real typing activity with avatars, animated dots and role colors. Shows channel indicators and improves the chat typing bar.">
+        <Button onClick={enableTypingFeatures}>Enable typing indicators</Button>
+        <Button size="small" variant="secondary" onClick={()=>openBuiltinSettings("TypingIndicator")}>Indicator options</Button>
+    </FieldCard>
+    <FieldCard label="Share with compatible Vencord users" hint="Profile themes and Decor avatar decorations use Vencord's existing sharing features. Fake badges, guild tags, shop decorations, frames and nameplates remain local.">
+        <Button size="small" onClick={enableSharedThemes}>Enable shared profile themes</Button>
+        <Button size="small" variant="secondary" onClick={()=>copyWithToast(encodeCompatibleTheme(settings.store.localThemePrimary,settings.store.localThemeAccent))}>Copy theme code</Button>
+        <Forms.FormText>Paste the copied invisible theme code into your Discord bio and save it yourself. Other users need FakeProfileThemes or a compatible plugin. This button does not change your bio.</Forms.FormText>
+        <Button size="small" onClick={enableSharedDecor}>Enable shared Decor decorations</Button>
+        <Button size="small" variant="secondary" onClick={()=>openBuiltinSettings("Decor")}>Configure Decor</Button>
+        <Forms.FormText>After restarting, configure Decor, sign in yourself, and select a Decor preset or upload your own decoration. Other Decor users can see that selection. Discord shop cosmetics do not become shared Decor items.</Forms.FormText>
     </FieldCard></div>;
+
 },{noop:false});
+
+function customRpcSettings() {
+    const store=plugins.CustomRPC?.settings?.store;
+    if (!store) throw new Error("CustomRPC is unavailable in this Vencord build.");
+    return store as Record<string,unknown>;
+}
+async function applyCustomRpc() {
+    const store=customRpcSettings();
+    if (typeof store.appName!=="string" || !store.appName.trim()) throw new Error("Configure an activity name first.");
+    Settings.plugins.CustomRPC.enabled=true;
+    const dependency=startDependenciesRecursive(plugins.CustomRPC);
+    if (dependency.restartNeeded || dependency.failures.length) throw new Error("CustomRPC enabled. Restart Discord to load its dependencies.");
+    store.enablePresence=true;
+    if (!plugins.CustomRPC.started && !startPlugin(plugins.CustomRPC)) throw new Error("CustomRPC could not start. Restart Discord and try again.");
+    await setRpc(true);
+    await setRpc();
+}
+function saveRpcPreset(name: string) {
+    const trimmed=name.trim().slice(0,40);
+    if (!trimmed) throw new Error("Enter a preset name.");
+    const preset={name:trimmed,values:snapshotRpc(customRpcSettings())};
+    const others=settings.store.rpcPresets.filter(preset=>preset.name!==trimmed);
+    if (others.length>=20) throw new Error("You can save up to 20 presets.");
+    settings.store.rpcPresets=[...others,preset];
+}
+
+const RichPresenceSection=ErrorBoundary.wrap(function RichPresenceSection(){
+    settings.use(["rpcPresets"]);
+    const [name,setName]=useState("");
+    const [minutes,setMinutes]=useState("0");
+    const [error,setError]=useState("");
+    const [busy,setBusy]=useState(false);
+    const run=async(action:()=>unknown)=>{
+        setError("");setBusy(true);
+        try {await action();} catch(error) {setError(error instanceof Error?error.message:"Unable to update Rich Presence.");}
+        finally {setBusy(false);}
+    };
+    return <div>
+        <Forms.FormText>CustomRPC sends an activity through Discord. Other users can see it when your Discord Activity Sharing is enabled, including people without this mod.</Forms.FormText>
+        {error&&<Forms.FormText style={{color:"var(--text-danger)"}}>{error}</Forms.FormText>}
+        <FieldCard label="Activity editor" hint="Set the activity type, name, details, images, up to two buttons, party size, and exact start/end timestamps in Vencord's editor.">
+            <Button disabled={busy} onClick={()=>openBuiltinSettings("CustomRPC")}>Configure activity</Button>
+            <Button disabled={busy} onClick={()=>run(applyCustomRpc)}>Apply activity</Button>
+            <Button disabled={busy} variant="secondary" onClick={()=>run(async()=>{customRpcSettings().enablePresence=false;await setRpc(true);})}>Stop activity</Button>
+            <Button disabled={busy} variant="secondary" onClick={()=>run(async()=>{await setRpc(true);loadRpcPreset(customRpcSettings(),{name:"New",values:{appName:"New activity",type:0,timestampMode:0}});customRpcSettings().enablePresence=false;openBuiltinSettings("CustomRPC");})}>New activity</Button>
+        </FieldCard>
+        <FieldCard label="Adjust how long" hint="Elapsed sets a start time this many minutes ago. Countdown sets an end time this many minutes from now. Apply sends the updated timer.">
+            <TextInput aria-label="Activity duration in minutes" type="number" min={0} value={minutes} onChange={setMinutes}/>
+            <Button disabled={busy} size="small" onClick={()=>run(async()=>{Object.assign(customRpcSettings(),rpcDuration(Number(minutes),false));await applyCustomRpc();})}>Apply elapsed minutes</Button>
+            <Button disabled={busy} size="small" onClick={()=>run(async()=>{Object.assign(customRpcSettings(),rpcDuration(Number(minutes),true));await applyCustomRpc();})}>Apply countdown minutes</Button>
+        </FieldCard>
+        <FieldCard label="Saved activities" hint="Save up to 20 presets and switch between them. Saving a preset does not publish it.">
+            <TextInput value={name} onChange={setName} placeholder="Preset name"/>
+            <Button disabled={busy} size="small" onClick={()=>run(()=>saveRpcPreset(name))}>Save current as preset</Button>
+            {settings.store.rpcPresets.map(preset=><div key={preset.name} style={{display:"flex",alignItems:"center",gap:8,marginTop:12}}>
+                <Text style={{flex:1}}>{preset.name}</Text>
+                <Button disabled={busy} size="small" onClick={()=>run(async()=>{loadRpcPreset(customRpcSettings(),preset);await applyCustomRpc();})}>Apply</Button>
+                <Button disabled={busy} size="small" variant="secondary" onClick={()=>{settings.store.rpcPresets=settings.store.rpcPresets.filter(item=>item.name!==preset.name);}}>Remove</Button>
+            </div>)}
+        </FieldCard>
+    </div>;
+},{noop:false});
+
 const GuildTagSection=ErrorBoundary.wrap(function GuildTagSection(){
     settings.use(["guildTagEnabled","guildTagText","guildTagId","guildTagBadge"]);
     const icons = guildTagIcons(bundledIcons);
@@ -5184,6 +5327,7 @@ const BadgeModal = ErrorBoundary.wrap(function BadgeModal(props: RenderModalProp
                     <TabBar.Item id={ModalTabs.Username}>Username</TabBar.Item>
                     <TabBar.Item id={ModalTabs.Images}>Images</TabBar.Item>
                     <TabBar.Item id={ModalTabs.Nitro}>Nitro</TabBar.Item>
+                    <TabBar.Item id={ModalTabs.RichPresence}>Rich Presence</TabBar.Item>
                     <TabBar.Item id={ModalTabs.GuildTag}>Guild tag</TabBar.Item>
                     <TabBar.Item id={ModalTabs.NameStyles}>Name styles</TabBar.Item>
                     <TabBar.Item id={ModalTabs.Badges}>Badges</TabBar.Item>
@@ -5217,6 +5361,7 @@ const BadgeModal = ErrorBoundary.wrap(function BadgeModal(props: RenderModalProp
                             {tab === ModalTabs.Username && <FieldCard label="Display name" hint="Local display-name / name-tag text. Leave empty to keep the original."><TextInput value={settings.store.customDisplayName} onChange={v=>{settings.store.customDisplayName=v;triggerProfileRefresh();}} maxLength={64} placeholder="Your display name"/></FieldCard>}
                             {tab === ModalTabs.Images && <ImagesSection/>}
                             {tab === ModalTabs.Nitro && <NitroSection/>}
+                            {tab === ModalTabs.RichPresence && <RichPresenceSection/>}
                             {tab === ModalTabs.GuildTag && <GuildTagSection/>}
                             {tab === ModalTabs.NameStyles && <NameStylesSection/>}
                             {tab === ModalTabs.Badges && (
@@ -5357,6 +5502,11 @@ function wrapOwnUserProfile(profile: NonNullable<ReturnType<typeof UserProfileSt
 
     const wrapped = new Proxy(profile, {
         get(target, prop, receiver) {
+            const localTheme = getLocalProfileTheme();
+            if (localTheme && prop==="themeColors") return localTheme;
+            if (localTheme && (prop==="accentColor" || prop==="primaryColor")) return localTheme[0];
+            if ((settings.store.nativeLocalApply || localTheme) && (prop==="canUsePremiumProfileCustomization" || prop==="canEditThemes")) return true;
+            if ((prop==="typingIndicatorStyle" || prop==="customTypingIndicatorStyle") && settings.store.localTypingOverride) return settings.store.localTypingStyle;
             if(prop==="premiumType"&&(settings.store.nitroYears>=0||settings.store.nativeLocalApply))return 2;
             if(prop==="banner"&&settings.store.localBannerImage)return "cosmetic-studio-local-banner";
             if((prop==="getBannerURL"||prop==="bannerURL")&&settings.store.localBannerImage)return prop==="getBannerURL"?()=>settings.store.localBannerImage:settings.store.localBannerImage;
@@ -5649,6 +5799,18 @@ function handleNativeSelection(input:Record<string,unknown>){
         }
         if(key==="nameplate") {settings.store.hiddenNameplate=value===null;settings.store.larpNameplate=value as LarpNameplateSetting|null;larpNameplateReady=!!value;}
         if(key==="profileFrame"){settings.store.localFrameOverride=true;settings.store.localProfileFrame=value as Record<string,unknown>|null;}
+        if(key==="themeColors") {
+            if(value===null) settings.store.localThemeEnabled=false;
+            else if(Array.isArray(value)&&value.length===2&&value.every(color=>Number.isInteger(color)&&color>=0&&color<=0xffffff)) {
+                settings.store.localThemePrimary="#"+value[0].toString(16).padStart(6,"0");
+                settings.store.localThemeAccent="#"+value[1].toString(16).padStart(6,"0");
+                settings.store.localThemeEnabled=true;
+            }
+        }
+        if(key==="customTypingIndicatorStyle") {
+            settings.store.localTypingOverride=true;
+            settings.store.localTypingStyle=value as Record<string,unknown>|string|null;
+        }
         triggerProfileRefresh();
     });}catch(error){console.warn("Cosmetic Studio native apply",error);return null;}
 }
@@ -5946,6 +6108,13 @@ export default definePlugin({
     withLocalMember,
     getBadgeCatalog: () => Object.entries(KNOWN_BADGES).map(([id,badge]) => ({id,...badge})),
     selectBadgeStage,
+    enableNitroCustomization,
+    enableTypingFeatures,
+    enableSharedThemes,
+    enableSharedDecor,
+    getLocalProfileTheme,
+    saveRpcPreset,
+    applyCustomRpc,
     applyLocalGuildTag,
     getGuildTagIcons: () => guildTagIcons(bundledIcons),
     getLocalGuildTagIcon(guildId: string, badge: string) {

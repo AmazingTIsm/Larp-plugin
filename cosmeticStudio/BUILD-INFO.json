@@ -7,7 +7,7 @@
   "node": "24.19.0",
   "pnpm": "12.15.0",
   "liveDiscordVerified": false,
-  "behaviorTests": 30,
+  "behaviorTests": 37,
   "nativeApplyAnchor": {
     "asset": "web.f86c748842ee176f.js",
     "module": 84540
@@ -32,7 +32,12 @@
     "single native badge registration",
     "native popup with discovery disabled",
     "41-icon guild-tag picker",
-    "guild tag Apply without server ID"
+    "guild tag Apply without server ID",
+    "local profile theme colors",
+    "native custom typing-style Apply",
+    "TypingIndicator and TypingTweaks controls",
+    "FakeProfileThemes and Decor integration",
+    "CustomRPC presets and duration controls"
   ],
   "badgePopupAnchors": [
     977059,

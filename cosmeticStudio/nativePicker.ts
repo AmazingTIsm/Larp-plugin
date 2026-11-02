@@ -31,7 +31,7 @@ export function installLocalPurchasePreview(store: PurchaseStore, products: () =
     }});
     return ()=>{store.getPurchase=originalGet;store.getPurchases=originalMany;if(ownDescriptor)Object.defineProperty(store,"purchases",ownDescriptor);else delete (store as Partial<PurchaseStore>).purchases;};
 }
-export const cosmeticKeys=["avatarDecoration","profileEffect","nameplate","profileFrame"] as const;
+export const cosmeticKeys=["avatarDecoration","profileEffect","nameplate","profileFrame","themeColors","customTypingIndicatorStyle"] as const;
 export function consumeLocalCosmetics(input:Record<string,unknown>, apply:(key:typeof cosmeticKeys[number],value:unknown)=>void){
     const rest={...input};
     for(const key of cosmeticKeys)if(Object.hasOwn(rest,key)){if(rest[key]!==undefined)apply(key,rest[key]);delete rest[key];}
